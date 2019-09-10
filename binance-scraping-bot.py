@@ -25,18 +25,24 @@ api = tweepy.API(auth)
 
 # Binance extract function
 def extract_binance(main_webpage, key_words):
-    final_item, final_list = [], []
+    # Create an empty string to store matchings
+    final_list = []
+
+    # Scrap the entire web-page
     sauce = urllib.request.urlopen(main_webpage).read()
     soup = bs.BeautifulSoup(sauce, 'lxml')
+
+    # Extract the announcements
     list = soup.find_all('li', class_ = 'article-list-item')
+
+    # Check for matchings
     for article in list:
         article_text = article.get_text().replace('\n', '')
         for item in key_words:
+            # If matching, create a new list
             if item in article_text:
-                final_item.append(article_text)
-                final_item.append('https://www.binance.com' + article.find('a').get('href'))
-                final_list.append(final_item)
-                final_item = [] # Reset once is in the final_list to not get duplicates
+                article_link = 'https://www.binance.com' + article.find('a').get('href')
+                final_list.append([article_text, article_link])
     return final_list
 
 # Telegram function
@@ -56,8 +62,10 @@ def tg_call(update, context):
 
 	# Loop pass - Watchdog mode
 	while True:
+        # Get new list of urls
 	    new_urls = extract_binance(main_webpage, key_words)
 	    for item in new_urls:
+            # Compare if they were included in the former list
 	        if item not in old_urls:
 	            msg = item[0] + '\n' + item[1]
 	            api.update_status(msg) # Twitter

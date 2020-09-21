@@ -14,10 +14,10 @@ soup = BeautifulSoup(response.text, 'html.parser')
 news_list = soup.find_all(class_ = 'css-sbrje5')
 
 # Create a bag of key words for getting matches
-key_words = ['list', 'token sale', 'open trading', 'opens trading', 'perpetual', 'FTX', 'twt', 'trust']
+key_words = ['list', 'token sale', 'open trading', 'opens trading', 'perpetual', 'defi', 'uniswap']
 
 # Open old database file
-path = "/home/pi/db.xlsx"
+path = "/home/pi/OpenAlpha/db.xlsx"
 df = pd.read_excel(path)
 
 # Empty list
